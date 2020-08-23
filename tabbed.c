@@ -127,6 +127,7 @@ static void sendxembed(int c, long msg, long detail, long d1, long d2);
 static void setcmd(int argc, char *argv[], int);
 static void setup(void);
 static void sigchld(int unused);
+static void showbar(const Arg *arg);
 static void spawn(const Arg *arg);
 static int textnw(const char *text, unsigned int len);
 static void toggle(const Arg *arg);
@@ -171,6 +172,7 @@ static char winid[64];
 static char **cmd;
 static char *wmname = "tabbed";
 static const char *geometry;
+static Bool barvisibility = False;
 
 static Colormap cmap;
 static Visual *visual = NULL;
@@ -329,28 +331,28 @@ void
 drawbar(void)
 {
 	XftColor *col;
-	int c, cc, fc, width, nbh, i;
+	int c, cc, fc, width, nbh;
 	char *name = NULL;
+
+	nbh = barvisibility ? vbh : 0;
+	if (nbh != bh) {
+		bh = nbh;
+		for (c = 0; c < nclients; c++)
+			XMoveResizeWindow(dpy, clients[c]->win, 0, bh, ww, wh-bh);
+	}
+
+	if (bh == 0) return;
 
 	if (nclients == 0) {
 		dc.x = 0;
 		dc.w = ww;
 		XFetchName(dpy, win, &name);
 		drawtext(name ? name : "", dc.norm);
-		XCopyArea(dpy, dc.drawable, win, dc.gc, 0, 0, ww, vbh, 0, 0);
+		XCopyArea(dpy, dc.drawable, win, dc.gc, 0, 0, ww, bh, 0, 0);
 		XSync(dpy, False);
 
 		return;
 	}
-
-	nbh = nclients > 1 ? vbh : 0;
-	if (bh != nbh) {
-		bh = nbh;
-		for (i = 0; i < nclients; i++)
-			XMoveResizeWindow(dpy, clients[i]->win, 0, bh, ww, wh - bh);
-	}
-	if (bh == 0)
-		return;
 
 	width = ww;
 	cc = ww / tabwidth;
@@ -1158,6 +1160,13 @@ setup(void)
 
 	nextfocus = foreground;
 	focus(-1);
+}
+
+void
+showbar(const Arg *arg)
+{
+	barvisibility = arg->i;
+	drawbar();
 }
 
 void
