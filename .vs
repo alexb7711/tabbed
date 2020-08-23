@@ -12,7 +12,7 @@ badd +0 tabbed.c
 argglobal
 %argdel
 $argadd tabbed.c.rej
-edit tabbed.c.rej
+edit tabbed.c
 set splitbelow splitright
 wincmd _ | wincmd |
 split
@@ -25,8 +25,8 @@ set winminheight=0
 set winheight=1
 set winminwidth=0
 set winwidth=1
-exe '1resize ' . ((&lines * 14 + 28) / 57)
-exe '2resize ' . ((&lines * 40 + 28) / 57)
+exe '1resize ' . ((&lines * 43 + 28) / 57)
+exe '2resize ' . ((&lines * 11 + 28) / 57)
 argglobal
 setlocal fdm=manual
 setlocal fde=0
@@ -37,17 +37,17 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 9 - ((8 * winheight(0) + 7) / 14)
+let s:l = 155 - ((21 * winheight(0) + 21) / 43)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-9
-normal! 0
+155
+normal! 040|
 wincmd w
 argglobal
-if bufexists("tabbed.c") | buffer tabbed.c | else | edit tabbed.c | endif
+if bufexists("tabbed.c.rej") | buffer tabbed.c.rej | else | edit tabbed.c.rej | endif
 if &buftype ==# 'terminal'
-  silent file tabbed.c
+  silent file tabbed.c.rej
 endif
 setlocal fdm=manual
 setlocal fde=0
@@ -58,16 +58,15 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 260 - ((19 * winheight(0) + 20) / 40)
+let s:l = 6 - ((5 * winheight(0) + 5) / 11)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-260
+6
 normal! 0
 wincmd w
-2wincmd w
-exe '1resize ' . ((&lines * 14 + 28) / 57)
-exe '2resize ' . ((&lines * 40 + 28) / 57)
+exe '1resize ' . ((&lines * 43 + 28) / 57)
+exe '2resize ' . ((&lines * 11 + 28) / 57)
 tabnext 1
 if exists('s:wipebuf') && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
