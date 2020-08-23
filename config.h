@@ -1,13 +1,13 @@
 /* See LICENSE file for copyright and license details. */
 
 /* appearance */
-static const char font[]        = "Inconsolata Nerd Font Mono:size      = 11";
-static const char* normbgcolor  = "#282828";
-static const char* normfgcolor  = "#eeeeee";
-static const char* selbgcolor   = "#458588";
-static const char* selfgcolor   = "#eeeeee";
-static const char* urgbgcolor   = "#fb4934";
-static const char* urgfgcolor   = "#282828";
+static const char font[]        = "monospace:size=9";
+static const char* normbgcolor  = "#222222";
+static const char* normfgcolor  = "#cccccc";
+static const char* selbgcolor   = "#555555";
+static const char* selfgcolor   = "#ffffff";
+static const char* urgbgcolor   = "#111111";
+static const char* urgfgcolor   = "#cc0000";
 static const char before[]      = "<";
 static const char after[]       = ">";
 static const char titletrim[]   = "...";
@@ -63,4 +63,10 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,     XK_u,      toggle,      { .v = (void*) &urgentswitch } },
 
 	{ 0,                    XK_F11,    fullscreen,  { 0 } },
+};
+
+static Key keyreleases[] = {
+	/* modifier             key          function     argument */
+	{ 0,                    XK_Shift_L,  NULL,   { 0 } },
+
 };
