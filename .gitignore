@@ -1,1 +1,7 @@
+.vs
+*~
+*.rej
+*.orig
 *.o
+tabbed
+config.h
