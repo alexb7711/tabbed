@@ -11,6 +11,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <X11/Xatom.h>
+#include <X11/keysym.h>
 #include <X11/Xlib.h>
 #include <X11/Xproto.h>
 #include <X11/Xutil.h>
@@ -1018,9 +1019,16 @@ setup(void)
 	XWMHints *wmh;
 	XClassHint class_hint;
 	XSizeHints *size_hint;
+	struct sigaction sa;
 
-	/* clean up any zombies immediately */
-	sigchld(0);
+	/* do not transform children into zombies when they terminate */
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = SA_NOCLDSTOP | SA_NOCLDWAIT | SA_RESTART;
+	sa.sa_handler = SIG_IGN;
+	sigaction(SIGCHLD, &sa, NULL);
+
+	/* clean up any zombies that might have been inherited */
+	while (waitpid(-1, NULL, WNOHANG) > 0);
 
 	/* init screen */
 	screen = DefaultScreen(dpy);
@@ -1181,11 +1189,19 @@ sigchld(int unused)
 void
 spawn(const Arg *arg)
 {
+	struct sigaction sa;
+
 	if (fork() == 0) {
 		if(dpy)
 			close(ConnectionNumber(dpy));
 
 		setsid();
+
+		sigemptyset(&sa.sa_mask);
+		sa.sa_flags = 0;
+		sa.sa_handler = SIG_DFL;
+		sigaction(SIGCHLD, &sa, NULL);
+
 		if (arg && arg->v) {
 			execvp(((char **)arg->v)[0], (char **)arg->v);
 			fprintf(stderr, "%s: execvp %s", argv0,
